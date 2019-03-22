@@ -55,4 +55,5 @@ def word_process_sim(temp):
                 t_jd = 100*i/(len_temp-1)
                 print("{:.2f}".format(t_jd)+" "+str(k)+" "+str(i),end='\r')
             k+=1
+
     return ans_temp
