@@ -10,6 +10,14 @@ import numpy as np
 import pandas as pd
 import jieba
 import re
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
+from sim_cilin import *
+from sim_hownet import *
+from sim_simhash import *
+from sim_tokenvector import *
+from sim_vsm import *
+
 
 #读入原始数据
 csv_path = ''
