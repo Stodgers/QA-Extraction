@@ -19,6 +19,7 @@ from sim_tokenvector import *
 from sim_vsm import *
 
 
+
 #读入原始数据
 csv_path = ''
 def text_loader(csv_path):
@@ -110,3 +111,40 @@ def load_select_filter_word(select_filter_word_path):
     return ans
 bd = load_select_filter_word(select_filter_word_path)
 
+def word_process_sim(temp):
+    cilin = SimCilin()
+    hownet = SimHownet()
+    simhash = SimHaming()
+    simtoken = SimTokenVec()
+    simvsm = SimVsm()
+    len_temp = len(temp)
+    ans_temp = []
+    k = 0
+    for i in range(len_temp-1):
+        flag = 0
+        endd = 0
+        tex = temp[i][0]
+        if i+10<len_temp:
+            endd = i+10
+        else:endd = len_temp
+        for j in range(i+1,endd):
+            texj = temp[j][0]
+            try:
+                if cilin.distance(tex,texj)>=0.8:
+                    flag = 1
+                    break
+                if simtoken.distance(tex, texj)>=0.8:
+                    flag = 1
+                    break
+            except Exception:
+                pass
+        if flag==0:
+            ans_temp.append((temp[i][0],temp[i][1]))
+            if i%100==0:
+                t_jd = 100*i/(len_temp-1)
+                print("{:.2f}%".format(t_jd)+" "+str(k)+" "+str(i),end='\r')
+            k+=1
+
+temp_ans = word_process_sim(temp)
+df = pd.DataFrame(temp_ans)
+df.to_csv('p2m.csv',index=False,header=False)

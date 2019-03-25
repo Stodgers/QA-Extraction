@@ -4,12 +4,12 @@
 import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import numpy as np
-import sys
-sys.path.append(r'..\SentenceSimilarity-master')
+import os
+path2=os.path.abspath('../SentenceSimilarity-master')  #表示当前所处的文件夹上一级文件夹的绝对路径
 class SimTokenVec:
 
     def __init__(self):
-        self.embedding_path = 'model/token_vector.bin'
+        self.embedding_path = path2+'/model/token_vector.bin'
         self.model = gensim.models.KeyedVectors.load_word2vec_format(self.embedding_path, binary=False)
 
     '''获取词向量文件'''

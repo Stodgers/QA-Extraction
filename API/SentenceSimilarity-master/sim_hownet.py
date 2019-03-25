@@ -3,10 +3,11 @@
 # File: sim_hownet.py
 import jieba.posseg as pseg
 import sys
-sys.path.append(r'..\SentenceSimilarity-master')
+import os
+path2=os.path.abspath('../SentenceSimilarity-master')
 class SimHownet:
     def __init__(self):
-        self.semantic_path = 'model/hownet.dat'
+        self.semantic_path = path2+'/model/hownet.dat'
         self.semantic_dict = self.load_semanticwords()
 
     '''加载语义词典'''

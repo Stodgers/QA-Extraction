@@ -5,11 +5,12 @@
 import codecs
 import jieba.posseg as pseg
 import sys
-sys.path.append(r'..\SentenceSimilarity-master')
+import os
+path2=os.path.abspath('../SentenceSimilarity-master')
 class SimCilin:
 
     def __init__(self):
-        self.cilin_path = 'model/cilin.txt'
+        self.cilin_path = path2+'\model\cilin.txt'
         self.sem_dict = self.load_semantic()
 
     '''加载语义词典'''

@@ -7,10 +7,11 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 import numpy as np
 import jieba.posseg as pesg
 import sys
-sys.path.append(r'..\SentenceSimilarity-master')
+import os
+path2=os.path.abspath('../SentenceSimilarity-master')
 class SimWordVec:
     def __init__(self):
-        self.embedding_path = 'model/word_vector.bin'
+        self.embedding_path = path2+'/model/word_vector.bin'
         self.model = gensim.models.KeyedVectors.load_word2vec_format(self.embedding_path, binary=False)
     '''获取词向量'''
     def get_wordvector(self, word):#获取词向量
