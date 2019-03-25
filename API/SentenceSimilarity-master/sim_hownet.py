@@ -2,7 +2,8 @@
 # coding: utf-8
 # File: sim_hownet.py
 import jieba.posseg as pseg
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 class SimHownet:
     def __init__(self):
         self.semantic_path = 'model/hownet.dat'

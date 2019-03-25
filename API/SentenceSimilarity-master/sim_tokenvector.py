@@ -4,7 +4,8 @@
 import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import numpy as np
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 class SimTokenVec:
 
     def __init__(self):

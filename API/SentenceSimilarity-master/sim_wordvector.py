@@ -6,7 +6,8 @@ import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import numpy as np
 import jieba.posseg as pesg
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 class SimWordVec:
     def __init__(self):
         self.embedding_path = 'model/word_vector.bin'
@@ -43,5 +44,4 @@ def test():
     text2 = '我愛你'
     simer = SimWordVec()
     simer.distance(text1, text2)
-
 #test()

@@ -4,7 +4,8 @@
 
 import codecs
 import jieba.posseg as pseg
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 class SimCilin:
 
     def __init__(self):

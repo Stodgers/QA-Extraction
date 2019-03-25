@@ -4,7 +4,8 @@
 
 from simhash import Simhash
 import jieba.posseg as pseg
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 class SimHaming:
     '''利用64位数，计算海明距离'''
     def haming_distance(self, code_s1, code_s2):
@@ -47,5 +48,4 @@ def test():
     simer = SimHaming()
     sim = simer.distance(text1, text2)
     print(sim)
-
 #test()

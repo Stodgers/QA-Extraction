@@ -5,7 +5,8 @@
 import jieba.posseg as pesg
 import math
 import numpy as np
-
+import sys
+sys.path.append(r'..\SentenceSimilarity-master')
 
 class SimVsm:
 
