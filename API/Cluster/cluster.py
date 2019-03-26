@@ -23,6 +23,7 @@ tokenizer: extract func
 lowercase：lower
 '''
 
+
 class cluster:
     def __init__(self,path,num):
         self.path = path
