@@ -25,24 +25,36 @@ lowercase：lower
 
 
 class cluster:
-    def __init__(self,path,num):
-        self.path = path
+    def __init__(self,data,num):
+        self.data = data
         self.num_clusters = num
-        self.text_list,self.tt = self.data_load()
+        self.Q_list,self.tt = self.data_load()
         self.tfidf_matrix = self.tf_idf()
         self.result = self.Kmeans()
 
     def data_load(self):
-        data = open(self.path,errors='ignore')
-        data = pd.read_csv(data)
-        tes = [i for i in data]
-        text_list = [i for i in data.iloc[:,0]]
-        return text_list,data
+        if type(self.data) == list:
+            data = self.data
+        else:
+            try:
+                suffix = str(self.data).split('.')[1]
+                if suffix == 'csv':
+                    with open(self.data,errors='ignore') as f:
+                        data = pd.read_csv(f).values.tolist()
+                elif suffix == 'xlsx':
+                     with pd.read_excel(self.data,header = None) as tt:
+                         data = tt.values.tolist()
+                print('已读取文件: ',self.data)
+            except Exception:
+                print('文件读取失败！只能读取list、csv、xlsx文件')
+                pass
+        Q_list = [i[0] for i in data]
+        return Q_list,data
 
     def tf_idf(self):
-        tfidf_vectorizer.fit(self.text_list)
+        tfidf_vectorizer.fit(self.Q_list)
         vbchart = dict(map(lambda t:(t[1],t[0]),tfidf_vectorizer.vocabulary_.items()))
-        tfidf_matrix = tfidf_vectorizer.transform(self.text_list)
+        tfidf_matrix = tfidf_vectorizer.transform(self.Q_list)
         return tfidf_matrix
 
     def Kmeans(self):
@@ -60,7 +72,7 @@ class cluster:
             text = ''
             for j in range(len(res)):
                 if res[j] == i:
-                    text += self.text_list[j]
+                    text += self.Q_list[j]
             keywords = analyse.textrank(text)
             keyword_list.append(keywords[:3])
         ans = [(res[i],keyword_list[res[i]],tt.iloc[i,0],tt.iloc[i,1]) for i in range(len(res))]
