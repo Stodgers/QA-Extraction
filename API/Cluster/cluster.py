@@ -23,7 +23,9 @@ tokenizer: extract func
 lowercase：lower
 '''
 
-
+#data:输入数据,可以传入list、csv和xlsx的文件路径
+#num:聚类的数目
+#Ps.输入格式为每行为一组QA，例如list['怎么开票？','登陆xx系统开票']
 class cluster:
     def __init__(self,data,num):
         self.data = data
