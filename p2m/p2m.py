@@ -35,8 +35,6 @@ from cluster import *
 
 dic_word_path = 'all_filter.txt'
 filter_word = []
-
-
 def dic_add(dic_word_path):
     filter_word_t = open(dic_word_path, encoding='utf8')
     for i in filter_word_t.readlines():
@@ -44,10 +42,15 @@ def dic_add(dic_word_path):
         # print(t)
         filter_word.append(t)
         jieba.add_word(t)
-
-
 dic_add(dic_word_path)
 
+def data_loader(csv_path):
+    ts = open(csv_path, errors='ignore')
+    ts = pd.read_csv(ts).values.tolist()
+    return ts
+
+temp_data_loader = data_loader(csv_path)
+print("temp_data_loader: ",len(temp_data_loader))
 
 def text_filter(temp):
     tec = []
@@ -71,21 +74,11 @@ def text_filter(temp):
                 flag = 1
                 break
         if flag: continue
-
         tec.append((ticc, i[1]))
     return tec
 
-
-ts = open(csv_path, errors='ignore')
-ts = pd.read_csv(ts).values.tolist()
-temp = text_filter(ts)  # 86223 len(temp)
-print(len(temp))
-
-# In[5]:
-
-
-
-# In[11]:
+text_filter_temp = text_filter(temp_data_loader)  # 86223 len(temp)
+print("text_filter_temp",len(text_filter_temp))
 
 def text_calc_merge(temp):
     tec = []
@@ -107,14 +100,10 @@ def text_calc_merge(temp):
     tec_calc = [(k, v) for k, v in dic_calc.items()]
     return tec, tec_calc
 
+text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
+print("text_calc_merge_temp",len(text_calc_merge_temp))
 
-temp, temp_calc = text_calc_merge(temp)
-print(len(temp))
-
-
-# In[19]:
-
-def word_process_sim():
+def word_process_sim(temp):
     cilin = SimCilin()
     hownet = SimHownet()
     simhash = SimHaming()
@@ -152,18 +141,11 @@ def word_process_sim():
     return ans_temp
 
 ts_ans = []
-ts_ans = word_process_sim()
-print(len(ts_ans), '\n')
-
-
-# In[17]:
-
-
+ts_ans = word_process_sim(text_calc_merge_temp)
+print("ts_ans",len(ts_ans), '\n')
 
 cl = cluster(10, ts_ans)
 cl.disp()
-
-# In[ ]:
 
 
 
