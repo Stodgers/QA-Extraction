@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # @Time    : 2019/3/25 10:06
 # @Author  : Stodgers
 # @Site    : 
@@ -6,12 +7,8 @@
 # @Software: PyCharm
 
 #读入原始数据
-csv_path = 'C:\\Users\\Ma\\Desktop\\testt.csv'
 
-# coding: utf-8
-
-# In[10]:
-
+csv_path = 'testt.csv'
 import jieba
 import json
 from jieba import analyse
@@ -33,7 +30,7 @@ from sim_hownet import *
 from sim_simhash import *
 from sim_tokenvector import *
 from sim_vsm import *
-
+from cluster import *
 # In[4]:
 
 dic_word_path = 'all_filter.txt'
@@ -154,79 +151,13 @@ def word_process_sim():
             k += 1
     return ans_temp
 
-
 ts_ans = []
 ts_ans = word_process_sim()
-
-# In[16]:
-
 print(len(ts_ans), '\n')
 
 
 # In[17]:
 
-class cluster:
-    def __init__(self, num, data):
-        self.data = data
-        self.num_clusters = num
-        self.Q_list, self.tt = self.data_load()
-        self.tfidf_matrix = self.tf_idf()
-        self.result = self.Kmeans()
-
-    def data_load(self):
-        if type(self.data) == list:
-            data = self.data
-        else:
-            try:
-                suffix = str(self.data).split('.')[1]
-                if suffix == 'csv':
-                    with open(self.data, errors='ignore') as f:
-                        data = pd.read_csv(f).values.tolist()
-                    print('已读取文件：' + self.data)
-                elif suffix == 'xlsx':
-                    ts = pd.read_excel(self.data, header=None)
-                    data = ts.values.tolist()
-                    print('已读取文件：' + self.data)
-            except Exception:
-                print('注意文件类型，只读取list、csv、xlsx')
-                pass
-
-        Q_list = [i[0] for i in data]
-        return Q_list, data
-
-    def tf_idf(self):
-        def jieba_tockenize(text):
-            return jieba.lcut(text)
-
-        tfidf_vectorizer = TfidfVectorizer(tokenizer=jieba_tockenize,
-                                           sublinear_tf=True, lowercase=False)
-        tfidf_vectorizer.fit(self.Q_list)
-        vbchart = dict(map(lambda t: (t[1], t[0]), tfidf_vectorizer.vocabulary_.items()))
-        tfidf_matrix = tfidf_vectorizer.transform(self.Q_list)
-        return tfidf_matrix
-
-    def Kmeans(self):
-        km_cluster = KMeans(n_clusters=self.num_clusters, max_iter=200,
-                            n_init=40, tol=1e-6, init='random', n_jobs=-1
-                            )
-        result = km_cluster.fit_predict(self.tfidf_matrix)
-        return result
-
-    def disp(self):
-        keyword_list = []
-        res = self.result
-        tt = self.tt
-        for i in range(self.num_clusters):
-            text = ''
-            for j in range(len(res)):
-                if res[j] == i:
-                    text += self.Q_list[j]
-            keywords = analyse.textrank(text)
-            keyword_list.append(keywords[:3])
-        ans = [(res[i], keyword_list[res[i]], tt[i][0], tt[i][1]) for i in range(len(res))]
-        ans = sorted(ans, key=lambda x: x[0])
-        dff = pd.DataFrame(ans)
-        dff.to_csv('cluster_ans_t233.csv',encoding='utf_8_sig', index=False, header=False)
 
 
 cl = cluster(10, ts_ans)
