@@ -5,7 +5,7 @@ import gensim, logging
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 import numpy as np
 import os
-path2=os.path.abspath('../SentenceSimilarity-master')  #表示当前所处的文件夹上一级文件夹的绝对路径
+path2=os.path.abspath('../API/SentenceSimilarity-master')  #表示当前所处的文件夹上一级文件夹的绝对路径
 class SimTokenVec:
 
     def __init__(self):

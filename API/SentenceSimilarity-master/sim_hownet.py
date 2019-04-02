@@ -4,7 +4,7 @@
 import jieba.posseg as pseg
 import sys
 import os
-path2=os.path.abspath('../SentenceSimilarity-master')
+path2=os.path.abspath('../API/SentenceSimilarity-master')
 class SimHownet:
     def __init__(self):
         self.semantic_path = path2+'/model/hownet.dat'

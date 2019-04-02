@@ -6,11 +6,14 @@ import codecs
 import jieba.posseg as pseg
 import sys
 import os
-path2=os.path.abspath('../SentenceSimilarity-master')
+path2=os.path.abspath('../API/SentenceSimilarity-master')
+path2 += '\model\cilin.txt'
+#tt = open(path2+'\model\cilin.txt')
+print(path2)
 class SimCilin:
 
     def __init__(self):
-        self.cilin_path = path2+'\model\cilin.txt'
+        self.cilin_path = path2#+'\model\cilin.txt'
         self.sem_dict = self.load_semantic()
 
     '''加载语义词典'''
