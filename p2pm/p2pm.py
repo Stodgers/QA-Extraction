@@ -80,8 +80,8 @@ def data_loader(csv_path):
                     ans.append(segs)
                 else:break
         if esy == 1 and ask1 == 1 and ans1 == 1:
-            askstr = ','.join(ask)
-            anstr = ','.join(ans)
+            askstr = ','.join(str(s) for s in ask)
+            anstr = ','.join(str(s) for s in ans)
             rw_ans.append((askstr,anstr))
     return rw_ans
 
@@ -145,9 +145,9 @@ def text_calc_merge(temp):
         else:
             dic_calc[Q] += 1
     tec = [(k, v) for k, v in dic.items()]
-    tec = sorted(tec, key=lambda x: x[0])
+    tec = sorted(tec, key=lambda x: x[0],reverse=True)
     tec_calc = [(k, v) for k, v in dic_calc.items()]
-    tec_calc = sorted(tec_calc, key=lambda x: x[1])
+    tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
 
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
