@@ -6,7 +6,6 @@
 # @File    : p2pm.py
 # @Software: PyCharm
 
-csv_path = 'QA.csv'
 import jieba
 import json
 from jieba import analyse
@@ -30,7 +29,7 @@ from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
 
-
+csv_path = 'QA.csv'
 def data_loader(csv_path):
     with open(csv_path,errors='ignore') as f:
         df = pd.read_csv(f)
