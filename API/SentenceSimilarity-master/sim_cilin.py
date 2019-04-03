@@ -9,7 +9,7 @@ import os
 path2=os.path.abspath('../API/SentenceSimilarity-master')
 path2 += '\model\cilin.txt'
 #tt = open(path2+'\model\cilin.txt')
-print(path2)
+#print(path2)
 class SimCilin:
 
     def __init__(self):
