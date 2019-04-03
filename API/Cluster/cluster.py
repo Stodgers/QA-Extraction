@@ -79,7 +79,7 @@ class cluster:
         ans = [(res[i],keyword_list[res[i]],tt[i][0],tt[i][1]) for i in range(len(res))]
         ans = sorted(ans,key=lambda x:x[0])
         dff = pd.DataFrame(ans)
-        dff.to_csv('cluster_ans.csv',index=False,header=False,encoding='utf-8-sig')
+        dff.to_csv('ans\\cluster_ans.csv',index=False,header=False,encoding='utf-8-sig')
 '''
 csv_path = 'C:\\Users\\Ma\\Desktop\\testt.csv'
 cl = cluster(10, csv_path)
