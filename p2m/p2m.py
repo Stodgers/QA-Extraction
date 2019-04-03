@@ -96,9 +96,9 @@ def text_calc_merge(temp):
         else:
             dic_calc[Q] += 1
     tec = [(k, v) for k, v in dic.items()]
-    tec = sorted(tec, key=lambda x: x[0])
+    tec = sorted(tec, key=lambda x: x[0],reverse=True)
     tec_calc = [(k, v) for k, v in dic_calc.items()]
-    tec_calc = sorted(tec_calc, key=lambda x: x[1])
+    tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
 
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
@@ -139,7 +139,7 @@ def word_process_sim(temp):
             ans_temp.append((temp[i][0], temp[i][1]))
             if i % 5 == 0:
                 t_jd = 100 * i / (len_temp - 1)
-                print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
+                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i), end='\r')
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     return ans_temp
