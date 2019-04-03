@@ -8,7 +8,7 @@
 
 #读入原始数据
 
-csv_path = 'testt.csv'
+csv_path = 'QA.csv'
 import jieba
 import json
 from jieba import analyse
@@ -98,9 +98,11 @@ def text_calc_merge(temp):
     tec = [(k, v) for k, v in dic.items()]
     tec = sorted(tec, key=lambda x: x[0])
     tec_calc = [(k, v) for k, v in dic_calc.items()]
+    tec_calc = sorted(tec_calc, key=lambda x: x[1])
     return tec, tec_calc
 
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
+
 df_temp_calc = pd.DataFrame(temp_calc)
 df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
 print("text_calc_merge_temp",len(text_calc_merge_temp))
@@ -138,7 +140,7 @@ def word_process_sim(temp):
             if i % 5 == 0:
                 t_jd = 100 * i / (len_temp - 1)
                 print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
-                print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
+                #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     return ans_temp
 
