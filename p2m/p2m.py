@@ -101,6 +101,8 @@ def text_calc_merge(temp):
     return tec, tec_calc
 
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
+df_temp_calc = pd.DataFrame(temp_calc)
+df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 
 def word_process_sim(temp):
