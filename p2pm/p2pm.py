@@ -85,6 +85,8 @@ def data_loader(csv_path):
             rw_ans.append((askstr,anstr))
     return rw_ans
 
+temp_data_loader = data_loader(csv_path)
+print("temp_data_loader: ",len(temp_data_loader))
 
 dic_word_path = 'all_filter.txt'
 filter_word = []
@@ -95,11 +97,8 @@ def dic_add(dic_word_path):
         # print(t)
         filter_word.append(t)
         jieba.add_word(t)
+
 dic_add(dic_word_path)
-
-
-temp_data_loader = data_loader(csv_path)
-print("temp_data_loader: ",len(temp_data_loader))
 
 def text_filter(temp):
     tec = []
@@ -188,7 +187,7 @@ def word_process_sim(temp):
             ans_temp.append((temp[i][0], temp[i][1]))
             if i % 5 == 0:
                 t_jd = 100 * i / (len_temp - 1)
-                print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
+                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i), end='\r')
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     return ans_temp
