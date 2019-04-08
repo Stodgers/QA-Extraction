@@ -157,8 +157,26 @@ ts_ans, Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("ts_ans",len(ts_ans), '\n')
 
 cl = cluster(10, Qrank)
-keyword = cl.disp()
-for i in Qrank:
-    print(i)
+keyword, rank_ans= cl.disp()
+# for i in Qrank:
+#     print(i)
+rank_temp = []
+cu_temp = []
+sum = 0
+for i,v in enumerate(rank_ans):
+    if i==len(rank_ans)-1 or rank_ans[i][0]!=rank_ans[i+1][0] :
+        cu_temp.append(rank_ans[i])
+        sum += rank_ans[i][4]
+        rank_temp.append([sorted(cu_temp,key=lambda x:x[4],reverse=True),sum])
+        sum=0
+        cu_temp = []
+    else:
+        cu_temp.append(rank_ans[i])
+        sum += rank_ans[i][4]
 
-
+rank_temp = sorted(rank_temp,key=lambda x:x[1],reverse=True)
+ans = []
+for i in rank_temp:
+    for j in i[0]:
+        ans.append(j)
+        print(j)
