@@ -52,7 +52,8 @@ class cluster:
     def tf_idf(self):
         def jieba_tockenize(text):
             return jieba.lcut(text)
-        tfidf_vectorizer = TfidfVectorizer(tokenizer=jieba_tockenize, sublinear_tf=True, lowercase=False)
+        tfidf_vectorizer = TfidfVectorizer(tokenizer=jieba_tockenize,
+                                           sublinear_tf=True, lowercase=False)
         tfidf_vectorizer.fit(self.Q_list)
         vbchart = dict(map(lambda t:(t[1],t[0]),tfidf_vectorizer.vocabulary_.items()))
         tfidf_matrix = tfidf_vectorizer.transform(self.Q_list)
@@ -66,6 +67,7 @@ class cluster:
         return result
 
     def disp(self):
+        key_temp = []
         keyword_list = []
         res = self.result
         tt = self.tt
@@ -75,11 +77,16 @@ class cluster:
                 if res[j] == i:
                     text += self.Q_list[j]
             keywords = analyse.textrank(text)
-            keyword_list.append(",".join(keywords[:3]))
-        ans = [(res[i],keyword_list[res[i]],tt[i][0],tt[i][1]) for i in range(len(res))]
+            #keyword_list.append(",".join(keywords[:3]))
+            for i in keywords:
+                key_temp.append(i)
+            key_temp = list(set(key_temp))
+            keyword_list.append(",".join(keywords))
+        ans = [(res[i],keyword_list[res[i]],tt[i][0],tt[i][1],tt[i][2]) for i in range(len(res))]
         ans = sorted(ans,key=lambda x:x[0])
         dff = pd.DataFrame(ans)
         dff.to_csv('ans\\cluster_ans.csv',index=False,header=False,encoding='utf-8-sig')
+        return key_temp
 '''
 csv_path = 'C:\\Users\\Ma\\Desktop\\QA.csv'
 cl = cluster(10, csv_path)
