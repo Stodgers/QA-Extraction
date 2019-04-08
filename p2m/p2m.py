@@ -95,19 +95,21 @@ def text_calc_merge(temp):
             dic_calc[Q] = 1
         else:
             dic_calc[Q] += 1
-    tec = [(k, v) for k, v in dic.items()]
-    tec = sorted(tec, key=lambda x: x[0],reverse=True)
-    tec_calc = [(k, v) for k, v in dic_calc.items()]
+
+
+    tec = [[k, v] for k, v in dic.items()]
+    tec_calc = [[k, v] for k, v in dic_calc.items()]
+    for i,v in enumerate(tec):
+        tec_calc[i].append(tec[i][1])
+    tec = sorted(tec, key=lambda x: x[0], reverse=True)
     tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
-
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
-
 df_temp_calc = pd.DataFrame(temp_calc)
 df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 
-def word_process_sim(temp):
+def word_process_sim(temp,temp_calc):
     cilin = SimCilin()
     hownet = SimHownet()
     simhash = SimHaming()
@@ -127,9 +129,13 @@ def word_process_sim(temp):
             texj = temp[j][0]
             try:
                 if cilin.distance(tex, texj) >= 0.9:
+                    temp_calc[j][1] += temp_calc[i][1]
+                    temp_calc[i][1] = 0
                     flag = 1
                     break
                 if simtoken.distance(tex, texj) >= 0.9:
+                    temp_calc[j][1] += temp_calc[i][1]
+                    temp_calc[i][1] = 0
                     flag = 1
                     break
             except Exception:
@@ -142,14 +148,17 @@ def word_process_sim(temp):
                 print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i), end='\r')
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
-    return ans_temp
+    temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
+    temp_calc = [[i[0],i[2],i[1]] for i in temp_calc if i[1]!=0]
+    return ans_temp,temp_calc
 
 ts_ans = []
-ts_ans = word_process_sim(text_calc_merge_temp)
+ts_ans, Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("ts_ans",len(ts_ans), '\n')
 
-cl = cluster(10, ts_ans)
-cl.disp()
-
+cl = cluster(10, Qrank)
+keyword = cl.disp()
+for i in Qrank:
+    print(i)
 
 
