@@ -31,7 +31,7 @@ from sim_simhash import *
 from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
-# In[4]:
+
 
 dic_word_path = 'all_filter.txt'
 filter_word = []
@@ -56,6 +56,7 @@ def text_filter(temp):
     tec = []
     k = 0
     for i in temp:
+
         k+=1
         text_i = str(i[0]).lower()
         text_i = text_i.replace(' ', '')
@@ -129,7 +130,13 @@ def word_process_sim(temp,temp_calc):
     len_temp = len(temp)
     ans_temp = []
     k = 0
+    for i,v in enumerate(temp_calc):
+        temp_calc[i].append([])
+
+    #temp_calc = [[i,[]] for i in temp_calc]
+    print(len(temp_calc[0]))
     for i in range(len_temp - 1):
+        temp_q_list = temp_calc[i][4]
         flag = 0
         tex = temp[i][0]
         if i + 10 < len_temp:
@@ -143,11 +150,15 @@ def word_process_sim(temp,temp_calc):
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
                     flag = 1
+                    temp_q_list.append(tex)
+                    temp_calc[j][4]+=temp_q_list
                     break
                 if simtoken.distance(tex, texj) >= 0.9:
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
                     flag = 1
+                    temp_q_list.append(tex)
+                    temp_calc[j][4]+=temp_q_list
                     break
             except Exception:
                 pass
@@ -160,7 +171,7 @@ def word_process_sim(temp,temp_calc):
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
-    temp_calc = [[i[0],i[2],i[1],i[3]] for i in temp_calc if i[1]!=0]
+    temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
     return ans_temp,temp_calc
 
 ts_ans = []
