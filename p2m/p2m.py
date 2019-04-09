@@ -54,7 +54,9 @@ print("temp_data_loader: ",len(temp_data_loader))
 
 def text_filter(temp):
     tec = []
+    k = 0
     for i in temp:
+        k+=1
         text_i = str(i[0]).lower()
         text_i = text_i.replace(' ', '')
         text_i = text_i.replace('　', '')
@@ -74,7 +76,7 @@ def text_filter(temp):
                 flag = 1
                 break
         if flag: continue
-        tec.append((ticc, i[1]))
+        tec.append([ticc,i[1],k])
     return tec
 
 text_filter_temp = text_filter(temp_data_loader)  # 86223 len(temp)
@@ -82,8 +84,10 @@ print("text_filter_temp",len(text_filter_temp))
 
 def text_calc_merge(temp):
     tec = []
+    dic_index = {}
     dic = {}
     dic_calc = {}
+    k = 0
     for i in temp:
         Q = i[0]
         Q = Q.replace(' ', '')
@@ -91,6 +95,8 @@ def text_calc_merge(temp):
         A = i[1]
         if Q not in dic:
             dic[Q] = A
+            dic_index[k] = i[2]
+            k += 1
         if Q not in dic_calc:
             dic_calc[Q] = 1
         else:
@@ -101,14 +107,19 @@ def text_calc_merge(temp):
     tec_calc = [[k, v] for k, v in dic_calc.items()]
     for i,v in enumerate(tec):
         tec_calc[i].append(tec[i][1])
+        tec_calc[i].append(dic_index[i])
     tec = sorted(tec, key=lambda x: x[0], reverse=True)
     tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
-df_temp_calc = pd.DataFrame(temp_calc)
-df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
+#df_temp_calc = pd.DataFrame(temp_calc)
+#df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
 print("text_calc_merge_temp",len(text_calc_merge_temp))
-
+print(temp_calc[:2])
+'''
+tec_calc
+q num a index
+'''
 def word_process_sim(temp,temp_calc):
     cilin = SimCilin()
     hownet = SimHownet()
@@ -149,7 +160,7 @@ def word_process_sim(temp,temp_calc):
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
-    temp_calc = [[i[0],i[2],i[1]] for i in temp_calc if i[1]!=0]
+    temp_calc = [[i[0],i[2],i[1],i[3]] for i in temp_calc if i[1]!=0]
     return ans_temp,temp_calc
 
 ts_ans = []
