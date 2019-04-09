@@ -83,7 +83,7 @@ class cluster:
             key_temp = list(set(key_temp))
             keyword_list.append(",".join(keywords))
         #tt[i][0],tt[i][1],tt[i][2],tt[i][3]
-        ans = [[res[i],keyword_list[res[i]],tt[i][0],tt[i][1],tt[i][2],tt[i][3]] for i in range(len(res))]
+        ans = [[res[i],keyword_list[res[i]],tt[i][0],tt[i][1],tt[i][2],tt[i][3],tt[i][4]] for i in range(len(res))]
         ans = sorted(ans,key=lambda x:x[0])
         dff = pd.DataFrame(ans)
         dff.to_csv('ans\\cluster_ans.csv',index=False,header=False,encoding='utf-8-sig')
