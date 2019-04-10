@@ -256,4 +256,11 @@ ans = []
 for i in rank_temp:
     for j in i[0]:
         ans.append(j)
-        print(j)
+        #print(j)
+
+df = pd.DataFrame(ans)
+df.to_csv('ans\\Qrank_v2.csv',
+          index=False,
+          header=['Seed','keyword','Q','A','num','index','Q_list'],
+          encoding='utf-8-sig'
+          )
