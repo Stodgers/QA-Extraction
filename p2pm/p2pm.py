@@ -191,7 +191,7 @@ def word_process_sim(temp,temp_calc):
     #temp_calc = [[i,[]] for i in temp_calc]
     print(len(temp_calc[0]))
     for i in range(len_temp - 1):
-        temp_q_list = temp_calc[i][4]
+        temp_q_list = list(set(temp_calc[i][4]))
         flag = 0
         tex = temp[i][0]
         if i + 10 < len_temp:
