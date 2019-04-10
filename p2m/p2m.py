@@ -202,7 +202,7 @@ ans = []
 for i in rank_temp:
     for j in i[0]:
         ans.append(j)
-        print(j)
+        #print(j)
 
 df = pd.DataFrame(ans)
 df.to_csv('ans\\Qrank_v2.csv',
