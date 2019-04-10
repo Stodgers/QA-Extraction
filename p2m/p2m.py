@@ -136,7 +136,7 @@ def word_process_sim(temp,temp_calc):
     #temp_calc = [[i,[]] for i in temp_calc]
     print(len(temp_calc[0]))
     for i in range(len_temp - 1):
-        temp_q_list = temp_calc[i][4]
+        temp_q_list = list(set(temp_calc[i][4]))
         flag = 0
         tex = temp[i][0]
         if i + 10 < len_temp:
@@ -197,8 +197,16 @@ for i,v in enumerate(rank_ans):
         sum += rank_ans[i][4]
 
 rank_temp = sorted(rank_temp,key=lambda x:x[1],reverse=True)
+
 ans = []
 for i in rank_temp:
     for j in i[0]:
         ans.append(j)
         print(j)
+
+df = pd.DataFrame(ans)
+df.to_csv('ans\\Qrank_v2.csv',
+          index=False,
+          header=['Seed','keyword','Q','A','num','index','Q_list'],
+          encoding='utf-8-sig'
+          )
