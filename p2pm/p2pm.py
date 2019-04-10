@@ -111,8 +111,6 @@ def text_filter(temp):
     tec = []
     k = 0
     for i in temp:
-
-        k+=1
         text_i = str(i[0]).lower()
         text_i = text_i.replace(' ', '')
         text_i = text_i.replace('　', '')
@@ -133,6 +131,7 @@ def text_filter(temp):
                 break
         if flag: continue
         tec.append([ticc,i[1],k])
+        k += 1
     return tec
 
 text_filter_temp = text_filter(temp_data_loader)  # 86223 len(temp)
