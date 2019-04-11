@@ -8,7 +8,7 @@
 
 #读入原始数据
 
-csv_path = 'chatlog_QA.csv'
+csv_path = '家电问诊q2a.csv'
 import jieba
 import json
 from jieba import analyse
@@ -145,7 +145,7 @@ def word_process_sim(temp,temp_calc):
         for j in range(i + 1, endd):
             texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.3:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.45:
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
                     flag = 1
@@ -166,9 +166,9 @@ def word_process_sim(temp,temp_calc):
 
         if flag == 0:
             ans_temp.append((temp[i][0], temp[i][1]))
-            if i % 5 == 0:
+            if i % 100 == 0:
                 t_jd = 100 * i / (len_temp - 1)
-                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i), end='\r')
+                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))#, end='\r'
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
@@ -179,7 +179,7 @@ ts_ans = []
 ts_ans, Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("ts_ans",len(ts_ans), '\n')
 
-cl = cluster(10, Qrank)
+cl = cluster(30, Qrank)
 keyword, rank_ans= cl.disp()
 # for i in Qrank:
 #     print(i)
@@ -206,7 +206,7 @@ for i in rank_temp:
         #print(j)
 
 df = pd.DataFrame(ans)
-df.to_csv('ans\\Qrank_v2.csv',
+df.to_csv('ans\\Qrank_家电问诊q2a.csv',
           index=False,
           header=['Seed','keyword','Q','A','num','index','Q_list'],
           encoding='utf-8-sig'
