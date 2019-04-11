@@ -188,25 +188,26 @@ def word_process_sim(temp,temp_calc):
         temp_calc[i].append([])
 
     #temp_calc = [[i,[]] for i in temp_calc]
-    print(len(temp_calc[0]))
+    #print(len(temp_calc[0]))
     for i in range(len_temp - 1):
         temp_q_list = list(set(temp_calc[i][4]))
         flag = 0
-        tex = temp[i][0]
+        tex = temp_calc[i][0]
         if i + 10 < len_temp:
             endd = i + 10
         else:
             endd = len_temp
         for j in range(i + 1, endd):
-            texj = temp[j][0]
+            texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj) >= 0.9:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.3:
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
                     flag = 1
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
                     break
+                '''
                 if simtoken.distance(tex, texj) >= 0.9:
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
@@ -214,6 +215,7 @@ def word_process_sim(temp,temp_calc):
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
                     break
+                '''
             except Exception:
                 pass
 
