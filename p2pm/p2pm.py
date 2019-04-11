@@ -29,7 +29,7 @@ from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
 
-csv_path = 'QA.csv'
+csv_path = 'all_filter.csv'
 def data_loader(csv_path):
     with open(csv_path,errors='ignore') as f:
         df = pd.read_csv(f)
@@ -46,7 +46,7 @@ def data_loader(csv_path):
         segs = df_list[i][2]
         ask = []
         ans = []
-        if flag == 0 and tag == '访客':
+        if flag == 0 and tag == '顾客':
             ask.append(segs)
             ask1 = 1
             flag = 1
@@ -98,11 +98,6 @@ def dic_add(dic_word_path):
         filter_word.append(t)
         jieba.add_word(t)
 dic_add(dic_word_path)
-
-def data_loader(csv_path):
-    ts = open(csv_path, errors='ignore')
-    ts = pd.read_csv(ts).values.tolist()
-    return ts
 
 temp_data_loader = data_loader(csv_path)
 print("temp_data_loader: ",len(temp_data_loader))
@@ -260,7 +255,7 @@ for i in rank_temp:
         #print(j)
 
 df = pd.DataFrame(ans)
-df.to_csv('ans\\Qrank_v2.csv',
+df.to_csv('ans\\Qrank_all_filter.csv',
           index=False,
           header=['Seed','keyword','Q','A','num','index','Q_list'],
           encoding='utf-8-sig'
