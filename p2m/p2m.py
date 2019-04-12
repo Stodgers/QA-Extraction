@@ -45,7 +45,7 @@ def dic_add(dic_word_path):
 dic_add(dic_word_path)
 
 def data_loader(csv_path):
-    ts = open(csv_path, errors='ignore')
+    ts = open(csv_path, errors='ignore',encoding='utf-8-sig')
     ts = pd.read_csv(ts).values.tolist()
     return ts
 
