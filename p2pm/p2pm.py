@@ -31,8 +31,8 @@ from cluster import *
 
 csv_path = 'all_filter.csv'
 def data_loader(csv_path):
-    with open(csv_path,errors='ignore') as f:
-        df = pd.read_csv(f)
+    with open(csv_path,errors='ignore',encoding='utf-8-sig') as f:
+        df = pd.read_csv(f,encoding='utf-8-sig')
         df_list = df.values.tolist()
     np_df_len = len(df_list)
     flag = 0
