@@ -45,9 +45,25 @@ def dic_add(dic_word_path):
 dic_add(dic_word_path)
 
 def data_loader(csv_path):
-    ts = open(csv_path, errors='ignore',encoding='utf-8-sig')
-    ts = pd.read_csv(ts).values.tolist()
-    return ts
+    with open(csv_path, errors='ignore') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore')
+            df_list = pd.read_csv(ts).values.tolist()
+    with open(csv_path, errors='ignore', encoding='utf-8') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore', encoding='utf-8')
+            df_list = pd.read_csv(ts).values.tolist()
+    with open(csv_path, errors='ignore', encoding='utf-8-sig') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore', encoding='utf-8-sig')
+            df_list = pd.read_csv(ts).values.tolist()
+    return df_list
 
 temp_data_loader = data_loader(csv_path)
 print("temp_data_loader: ",len(temp_data_loader))
