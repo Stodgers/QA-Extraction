@@ -29,11 +29,27 @@ from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
 
-csv_path = 'all_filter.csv'
+csv_path = 'webchat.csv'
 def data_loader(csv_path):
-    with open(csv_path,errors='ignore',encoding='utf-8-sig') as f:
-        df = pd.read_csv(f,encoding='utf-8-sig')
-        df_list = df.values.tolist()
+    with open(csv_path, errors='ignore') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore')
+            df_list = pd.read_csv(ts).values.tolist()
+    with open(csv_path, errors='ignore',encoding='utf-8') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore',encoding='utf-8')
+            df_list = pd.read_csv(ts).values.tolist()
+    with open(csv_path, errors='ignore',encoding='utf-8-sig') as ts:
+        let = ts.read(10)
+        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
+        if tt != 0:
+            ts = open(csv_path, errors='ignore',encoding='utf-8-sig')
+            df_list = pd.read_csv(ts).values.tolist()
+
     np_df_len = len(df_list)
     flag = 0
     rw_ans = []
@@ -46,7 +62,7 @@ def data_loader(csv_path):
         segs = df_list[i][2]
         ask = []
         ans = []
-        if flag == 0 and tag == '顾客':
+        if flag == 0 and tag == '客户':
             ask.append(segs)
             ask1 = 1
             flag = 1
