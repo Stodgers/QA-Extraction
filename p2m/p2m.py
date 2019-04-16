@@ -163,15 +163,6 @@ def word_process_sim(temp,temp_calc):
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
                     break
-                '''
-                if simtoken.distance(tex, texj) >= 0.9:
-                    temp_calc[j][1] += temp_calc[i][1]
-                    temp_calc[i][1] = 0
-                    flag = 1
-                    temp_q_list.append(tex)
-                    temp_calc[j][4]+=temp_q_list
-                    break
-                '''
             except Exception:
                 pass
 
