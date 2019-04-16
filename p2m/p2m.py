@@ -77,10 +77,6 @@ def text_filter(temp):
         text_i = text_i.replace('　', '')
         ticc = text_i
         if len(text_i) <= 2 or len(text_i) >= 50: continue
-        #         segs = jieba.cut(text_i)
-        #         segs = list(filter(lambda x:not x.isalpha(),segs))
-        #         segs = list(filter(lambda x:not x.isdigit(),segs))
-        #         segs = list(filter(lambda x:x not in bd,segs))
         tt = ''.join(re.findall(r'[\u4e00-\u9fa5]', str(i[0])))
         if len(tt) < 3: continue
         segs = jieba.cut(tt)
@@ -117,7 +113,6 @@ def text_calc_merge(temp):
             dic_calc[Q] = 1
         else:
             dic_calc[Q] += 1
-
 
     tec = [[k, v] for k, v in dic.items()]
     tec_calc = [[k, v] for k, v in dic_calc.items()]
