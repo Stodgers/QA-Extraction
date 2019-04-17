@@ -6,9 +6,6 @@
 # @File    : p2m.py
 # @Software: PyCharm
 
-#读入原始数据
-
-csv_path = '家电问诊q2a.csv'
 import jieba
 import json
 from jieba import analyse
@@ -33,7 +30,13 @@ from sim_vsm import *
 from cluster import *
 
 
+'''数据路径'''
+csv_path = '家电问诊q2a.csv'
+
+'''全过滤词词典'''
 dic_word_path = 'all_filter.txt'
+
+'''把全过滤词硬添加进分词词典,过滤匹配'''
 filter_word = []
 def dic_add(dic_word_path):
     filter_word_t = open(dic_word_path, encoding='utf8')
@@ -44,6 +47,7 @@ def dic_add(dic_word_path):
         jieba.add_word(t)
 dic_add(dic_word_path)
 
+'''数据加载,容错'''
 def data_loader(csv_path):
     with open(csv_path, errors='ignore') as ts:
         let = ts.read(10)
@@ -64,10 +68,10 @@ def data_loader(csv_path):
             ts = open(csv_path, errors='ignore', encoding='utf-8-sig')
             df_list = pd.read_csv(ts).values.tolist()
     return df_list
-
 temp_data_loader = data_loader(csv_path)
 print("temp_data_loader: ",len(temp_data_loader))
 
+'''数据过滤'''
 def text_filter(temp):
     tec = []
     k = 0
@@ -77,8 +81,8 @@ def text_filter(temp):
         text_i = text_i.replace('　', '')
         ticc = text_i
         if len(text_i) <= 2 or len(text_i) >= 50: continue
-        tt = ''.join(re.findall(r'[\u4e00-\u9fa5]', str(i[0])))
-        if len(tt) < 3: continue
+        tt = ''.join(re.findall(r'[\u4e00-\u9fa5]', str(i[0])))#把文字取出来,求长度
+        if len(tt) < 3: continue#长度小于3就扔掉,不满足主谓宾的合格句子成分
         segs = jieba.cut(tt)
         segs = list(segs)
         flag = 0
@@ -92,8 +96,9 @@ def text_filter(temp):
     return tec
 
 text_filter_temp = text_filter(temp_data_loader)  # 86223 len(temp)
-print("text_filter_temp",len(text_filter_temp))
+print("text_filter_temp",len(text_filter_temp)) #输出一下过滤后的长度
 
+'''数据统计(频次),结构拼装()'''
 def text_calc_merge(temp):
     tec = []
     dic_index = {}
@@ -117,20 +122,19 @@ def text_calc_merge(temp):
     tec = [[k, v] for k, v in dic.items()]
     tec_calc = [[k, v] for k, v in dic_calc.items()]
     for i,v in enumerate(tec):
-        tec_calc[i].append(tec[i][1])
-        tec_calc[i].append(dic_index[i])
+        tec_calc[i].append(tec[i][1])#把Answer拼接在后面
+        tec_calc[i].append(dic_index[i])#把索引拼接在后面
+    '''拼接后tec_calc每行的结构->(Q,Num,A,index)'''
     tec = sorted(tec, key=lambda x: x[0], reverse=True)
-    tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
+    tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)#频次排序
     return tec, tec_calc
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
 #df_temp_calc = pd.DataFrame(temp_calc)
 #df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 print(temp_calc[:2])
-'''
-tec_calc
-q num a index
-'''
+
+'''相似度计算合并相似问'''
 def word_process_sim(temp,temp_calc):
     cilin = SimCilin()
     hownet = SimHownet()
@@ -140,15 +144,16 @@ def word_process_sim(temp,temp_calc):
     len_temp = len(temp)
     ans_temp = []
     k = 0
+
+    '''为Q_list添加空存储位置,存储在每行最后一个位置'''
     for i,v in enumerate(temp_calc):
         temp_calc[i].append([])
 
-    #temp_calc = [[i,[]] for i in temp_calc]
-    #print(len(temp_calc[0]))
     for i in range(len_temp - 1):
-        temp_q_list = list(set(temp_calc[i][4]))
+        temp_q_list = list(set(temp_calc[i][4]))#有重复继承,set化
         flag = 0
         tex = temp_calc[i][0]
+
         if i + 10 < len_temp:
             endd = i + 10
         else:
@@ -157,8 +162,8 @@ def word_process_sim(temp,temp_calc):
             texj = temp_calc[j][0]
             try:
                 if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.45:
-                    temp_calc[j][1] += temp_calc[i][1]
-                    temp_calc[i][1] = 0
+                    temp_calc[j][1] += temp_calc[i][1] #相似问也统计进当前Q之中
+                    temp_calc[i][1] = 0                #原句频次置零
                     flag = 1
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
@@ -170,10 +175,10 @@ def word_process_sim(temp,temp_calc):
             ans_temp.append((temp[i][0], temp[i][1]))
             if i % 100 == 0:
                 t_jd = 100 * i / (len_temp - 1)
-                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))#, end='\r'
-                #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
+                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))#, end='\r'#刷新进度
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
+    '''结构重新组装'''
     temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
     return ans_temp,temp_calc
 
