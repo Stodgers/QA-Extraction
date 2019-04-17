@@ -7,6 +7,7 @@ import jieba.posseg as pseg
 import sys
 sys.path.append(r'..\SentenceSimilarity-master')
 class SimHaming:
+
     '''利用64位数，计算海明距离'''
     def haming_distance(self, code_s1, code_s2):
         x = (code_s1 ^ code_s2) & ((1 << 64) - 1)
