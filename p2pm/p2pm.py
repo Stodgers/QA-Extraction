@@ -180,7 +180,6 @@ def text_calc_merge(temp):
         else:
             dic_calc[Q] += 1
 
-
     tec = [[k, v] for k, v in dic.items()]
     tec_calc = [[k, v] for k, v in dic_calc.items()]
     for i,v in enumerate(tec):
