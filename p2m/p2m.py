@@ -29,12 +29,22 @@ from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
 
-
+################################################
+################################################
 '''数据路径'''
 csv_path = '家电问诊q2a.csv'
 
 '''全过滤词词典'''
 dic_word_path = 'all_filter.txt'
+
+'''聚类簇,数目'''
+cluster_num = 20
+
+'''相似问合并参数,0.9*0.9=0.81'''
+sim_seed = 0.45
+################################################
+################################################
+
 
 '''把全过滤词硬添加进分词词典,过滤匹配'''
 filter_word = []
@@ -129,8 +139,7 @@ def text_calc_merge(temp):
     tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)#频次排序
     return tec, tec_calc
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
-#df_temp_calc = pd.DataFrame(temp_calc)
-#df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
+
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 print(temp_calc[:2])
 
@@ -161,7 +170,7 @@ def word_process_sim(temp,temp_calc):
         for j in range(i + 1, endd):
             texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.4:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= sim_seed:
                     temp_calc[j][1] += temp_calc[i][1] #相似问也统计进当前Q之中
                     temp_calc[i][1] = 0                #原句频次置零
                     flag = 1
@@ -180,16 +189,15 @@ def word_process_sim(temp,temp_calc):
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
     '''结构重新组装'''
     temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
-    return ans_temp,temp_calc
+    return temp_calc
 
 ts_ans = []
-ts_ans, Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
-print("ts_ans",len(ts_ans), '\n')
+Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
+print("Qrank",len(Qrank), '\n')
 
-cl = cluster(30, Qrank)
+cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
-# for i in Qrank:
-#     print(i)
+
 rank_temp = []
 cu_temp = []
 sum = 0
