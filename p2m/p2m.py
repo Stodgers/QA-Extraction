@@ -161,7 +161,7 @@ def word_process_sim(temp,temp_calc):
         for j in range(i + 1, endd):
             texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.45:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.4:
                     temp_calc[j][1] += temp_calc[i][1] #相似问也统计进当前Q之中
                     temp_calc[i][1] = 0                #原句频次置零
                     flag = 1
