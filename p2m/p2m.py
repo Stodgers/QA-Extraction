@@ -110,7 +110,6 @@ print("text_filter_temp",len(text_filter_temp)) #输出一下过滤后的长度
 
 '''数据统计(频次),结构拼装()'''
 def text_calc_merge(temp):
-    tec = []
     dic_index = {}
     dic = {}
     dic_calc = {}
