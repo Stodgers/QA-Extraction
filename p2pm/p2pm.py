@@ -28,8 +28,21 @@ from sim_simhash import *
 from sim_tokenvector import *
 from sim_vsm import *
 from cluster import *
-
+################################################
+################################################
+'''数据路径'''
 csv_path = 'webchat.csv'
+
+'''全过滤词词典'''
+dic_word_path = 'all_filter.txt'
+
+'''聚类簇,数目'''
+cluster_num = 20
+
+'''相似问合并参数,0.9*0.9=0.81'''
+sim_seed = 0.45
+################################################
+################################################
 def data_loader(csv_path):
     with open(csv_path, errors='ignore') as ts:
         let = ts.read(10)
@@ -104,7 +117,6 @@ def data_loader(csv_path):
 temp_data_loader = data_loader(csv_path)
 print("temp_data_loader: ",len(temp_data_loader))
 
-dic_word_path = 'all_filter.txt'
 filter_word = []
 def dic_add(dic_word_path):
     filter_word_t = open(dic_word_path, encoding='utf8')
@@ -178,14 +190,10 @@ def text_calc_merge(temp):
     tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
-#df_temp_calc = pd.DataFrame(temp_calc)
-#df_temp_calc.to_csv('ans//Qrank.csv',index=False,header=False,encoding='utf-8-sig')
+
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 print(temp_calc[:2])
-'''
-tec_calc
-q num a index
-'''
+
 def word_process_sim(temp,temp_calc):
     cilin = SimCilin()
     hownet = SimHownet()
@@ -198,8 +206,6 @@ def word_process_sim(temp,temp_calc):
     for i,v in enumerate(temp_calc):
         temp_calc[i].append([])
 
-    #temp_calc = [[i,[]] for i in temp_calc]
-    #print(len(temp_calc[0]))
     for i in range(len_temp - 1):
         temp_q_list = list(set(temp_calc[i][4]))
         flag = 0
@@ -211,22 +217,14 @@ def word_process_sim(temp,temp_calc):
         for j in range(i + 1, endd):
             texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= 0.4:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= sim_seed:
                     temp_calc[j][1] += temp_calc[i][1]
                     temp_calc[i][1] = 0
                     flag = 1
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
                     break
-                '''
-                if simtoken.distance(tex, texj) >= 0.9:
-                    temp_calc[j][1] += temp_calc[i][1]
-                    temp_calc[i][1] = 0
-                    flag = 1
-                    temp_q_list.append(tex)
-                    temp_calc[j][4]+=temp_q_list
-                    break
-                '''
+
             except Exception:
                 pass
 
@@ -239,16 +237,14 @@ def word_process_sim(temp,temp_calc):
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
     temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
-    return ans_temp,temp_calc
+    return temp_calc
 
-ts_ans = []
-ts_ans, Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
-print("ts_ans",len(ts_ans), '\n')
+Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
+print("Qrank",len(Qrank), '\n')
 
-cl = cluster(10, Qrank)
+cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
-# for i in Qrank:
-#     print(i)
+
 rank_temp = []
 cu_temp = []
 sum = 0
