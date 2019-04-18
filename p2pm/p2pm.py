@@ -232,7 +232,7 @@ def word_process_sim(temp,temp_calc):
             ans_temp.append((temp[i][0], temp[i][1]))
             if i % 5 == 0:
                 t_jd = 100 * i / (len_temp - 1)
-                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i), end='\r')
+                print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
