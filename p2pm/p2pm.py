@@ -43,6 +43,8 @@ cluster_num = 20
 sim_seed = 0.45
 ################################################
 ################################################
+
+
 def data_loader(csv_path):
     with open(csv_path, errors='ignore') as ts:
         let = ts.read(10)
