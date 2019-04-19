@@ -237,7 +237,7 @@ def word_process_sim(temp,temp_calc):
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
-    temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
+    temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
 
 Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
