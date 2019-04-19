@@ -187,7 +187,7 @@ def word_process_sim(temp,temp_calc):
             k += 1
     temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
     '''结构重新组装'''
-    temp_calc = [[i[0],i[2],i[1],i[3],i[4]] for i in temp_calc if i[1]!=0]
+    temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
 
 ts_ans = []
