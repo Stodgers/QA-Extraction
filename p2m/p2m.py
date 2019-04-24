@@ -185,7 +185,7 @@ def word_process_sim(temp,temp_calc):
                 t_jd = 100 * i / (len_temp - 1)
                 print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))#, end='\r'#刷新进度
             k += 1
-    temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
+    temp_calc = sorted(temp_calc,key=lambda x:x[0],reverse=True)
     '''结构重新组装'''
     temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
