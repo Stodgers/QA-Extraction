@@ -231,18 +231,21 @@ def word_process_sim(temp,temp_calc):
 
         if flag == 0:
             ans_temp.append((temp[i][0], temp[i][1]))
-            if i % 5 == 0:
+            if i % 100 == 0:
                 t_jd = 100 * i / (len_temp - 1)
                 print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
-    temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
+    temp_calc = sorted(temp_calc,key=lambda x:x[0],reverse=True)
     temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
 
 Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("Qrank",len(Qrank), '\n')
 
+
+ts_num = len(Qrank)/30
+cluster_num = int((ts_num+cluster_num)/2)
 cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
 
