@@ -32,10 +32,10 @@ from cluster import *
 ################################################
 ################################################
 '''数据路径'''
-csv_path = '家电问诊q2a.csv'
+csv_path = 'data\\'+'家电问诊q2a.csv'
 
 '''全过滤词词典'''
-dic_word_path = 'all_filter.txt'
+dic_word_path = 'dic\\'+'all_filter.txt'
 
 '''聚类簇,数目'''
 cluster_num = 20
