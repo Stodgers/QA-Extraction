@@ -31,10 +31,10 @@ from cluster import *
 ################################################
 ################################################
 '''数据路径'''
-csv_path = 'webchat.csv'
+csv_path = 'data\\'+'webchat.csv'
 
 '''全过滤词词典'''
-dic_word_path = 'all_filter.txt'
+dic_word_path = 'dic\\'+'all_filter.txt'
 
 '''聚类簇,数目'''
 cluster_num = 20
@@ -269,8 +269,36 @@ for i in rank_temp:
     for j in i[0]:
         ans.append(j)
         #print(j)
+'''关键词过滤'''
+ans_filter_word = []
+def ans_dic_add(dic_word_path):
+    filter_word_t = open(dic_word_path, encoding='utf8')
+    for i in filter_word_t.readlines():
+        t = i.strip('\n')
+        # print(t)
+        filter_word.append(t)
+        jieba.add_word(t)
+ans_dic_add('dic\\ans_filter.txt')
 
-df = pd.DataFrame(ans)
+ans_filtered = []
+for k,v in enumerate(ans):
+    keyword_segs = ans[k][1].split(',')
+    keyword_segs = list(filter(lambda x: x.strip(), keyword_segs))
+    keyword_segs = list(filter(lambda x: len(x) > 1, keyword_segs))
+    keyword_segs = [i for i in keyword_segs if i not in ans_filter_word]
+    q_segs = jieba.lcut(ans[k][2])
+    q_segs = list(filter(lambda x: x.strip(),q_segs))
+    q_segs = list(filter(lambda x: len(x) > 1,q_segs))
+    flag = 0
+    for j in q_segs:
+        if j in keyword_segs:
+            flag = 1
+            break
+    if flag == 1:
+        ans[k][1] = ','.join(keyword_segs)
+        ans_filtered.append(v)
+
+df = pd.DataFrame(ans_filtered)
 df.to_csv('ans\\Qrank_all_filter.csv',
           index=False,
           header=['Seed','keyword','Q','A','num','index','Q_list'],
