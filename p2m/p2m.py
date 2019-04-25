@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/3/25 10:06
 # @Author  : Stodgers
-# @Site    : 
+# @Site    :
 # @File    : p2m.py
 # @Software: PyCharm
 
@@ -16,6 +16,7 @@ import pandas as pd
 import re
 import sys
 import os
+import math
 path1=os.path.abspath('.')
 path2=os.path.abspath('../API/SentenceSimilarity-master')
 path3=os.path.abspath('../API/Cluster')
@@ -38,10 +39,13 @@ csv_path = 'data\\'+'家电问诊q2a.csv'
 dic_word_path = 'dic\\'+'all_filter.txt'
 
 '''聚类簇,数目'''
-cluster_num = 20
+cluster_num = 120
 
 '''相似问合并参数,0.9*0.9=0.81'''
-sim_seed = 0.45
+sim_seed = 0.36
+
+'''每个簇保留问题数目'''
+k_num = 10
 ################################################
 ################################################
 
@@ -90,11 +94,11 @@ def text_filter(temp):
         text_i = text_i.replace(' ', '')
         text_i = text_i.replace('　', '')
         ticc = text_i
-        if len(text_i) <= 2 or len(text_i) >= 50: continue
+        if len(text_i) < 5 or len(text_i) >= 50: continue
         tt = ''.join(re.findall(r'[\u4e00-\u9fa5]', str(i[0])))#把文字取出来,求长度
-        if len(tt) < 3: continue#长度小于3就扔掉,不满足主谓宾的合格句子成分
-        segs = jieba.cut(tt)
-        segs = list(segs)
+        if len(tt) < 4: continue#长度小于3就扔掉,不满足主谓宾的合格句子成分
+        segs = jieba.lcut(tt)
+        #segs = list(segs)
         flag = 0
         for j in segs:
             if j in filter_word:
@@ -135,7 +139,7 @@ def text_calc_merge(temp):
         tec_calc[i].append(dic_index[i])#把索引拼接在后面
     '''拼接后tec_calc每行的结构->(Q,Num,A,index)'''
     tec = sorted(tec, key=lambda x: x[0], reverse=True)
-    tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)#频次排序
+    tec_calc = sorted(tec_calc, key=lambda x: x[0],reverse=True)#频次排序
     return tec, tec_calc
 text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
 
@@ -169,7 +173,7 @@ def word_process_sim(temp,temp_calc):
         for j in range(i + 1, endd):
             texj = temp_calc[j][0]
             try:
-                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= sim_seed:
+                if cilin.distance(tex, texj)*simtoken.distance(tex, texj) >= sim_seed and simvsm.distance(tex, texj)>=0.2:
                     temp_calc[j][1] += temp_calc[i][1] #相似问也统计进当前Q之中
                     temp_calc[i][1] = 0                #原句频次置零
                     flag = 1
@@ -185,15 +189,18 @@ def word_process_sim(temp,temp_calc):
                 t_jd = 100 * i / (len_temp - 1)
                 print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))#, end='\r'#刷新进度
             k += 1
-    temp_calc = sorted(temp_calc,key=lambda x:x[0],reverse=True)
+    temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
     '''结构重新组装'''
     temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
 
 ts_ans = []
-Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
+Qrank = word_process_sim(text_calc_merge_temp,temp_calc)
 print("Qrank",len(Qrank), '\n')
 
+flat_num = len(Qrank)/10
+p_a = math.sqrt((cluster_num+1)/flat_num)
+cluster_num = int(p_a*flat_num)
 cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
 
@@ -205,7 +212,7 @@ for i,v in enumerate(rank_ans):
         cu_temp.append(rank_ans[i])
         sum += rank_ans[i][4]
         rank_temp.append([sorted(cu_temp,key=lambda x:x[4],reverse=True),sum])
-        sum=0
+        sum = 0
         cu_temp = []
     else:
         cu_temp.append(rank_ans[i])
@@ -213,39 +220,41 @@ for i,v in enumerate(rank_ans):
 
 rank_temp = sorted(rank_temp,key=lambda x:x[1],reverse=True)
 
-ans = []
-for i in rank_temp:
-    for j in i[0]:
-        ans.append(j)
-        #print(j)
-'''关键词过滤'''
 ans_filter_word = []
 def ans_dic_add(dic_word_path):
     filter_word_t = open(dic_word_path, encoding='utf8')
     for i in filter_word_t.readlines():
         t = i.strip('\n')
         # print(t)
-        filter_word.append(t)
+        ans_filter_word.append(t)
         jieba.add_word(t)
 ans_dic_add('dic\\ans_filter.txt')
 
 ans_filtered = []
-for k,v in enumerate(ans):
-    keyword_segs = ans[k][1].split(',')
+for i in rank_temp:
+    kic = 0
+    ans = i[0]
+    keyword_segs = ans[0][1].split(',')
     keyword_segs = list(filter(lambda x: x.strip(), keyword_segs))
     keyword_segs = list(filter(lambda x: len(x) > 1, keyword_segs))
-    keyword_segs = [i for i in keyword_segs if i not in ans_filter_word]
-    q_segs = jieba.lcut(ans[k][2])
-    q_segs = list(filter(lambda x: x.strip(),q_segs))
-    q_segs = list(filter(lambda x: len(x) > 1,q_segs))
-    flag = 0
-    for j in q_segs:
-        if j in keyword_segs:
-            flag = 1
-            break
-    if flag == 1:
-        ans[k][1] = ','.join(keyword_segs)
-        ans_filtered.append(v)
+    keyword_segs = [j for j in keyword_segs if j not in ans_filter_word]
+    for k,v in enumerate(ans):
+
+        q_segs = jieba.lcut(ans[k][2])
+        q_segs = list(filter(lambda x: x.strip(), q_segs))
+        q_segs = list(filter(lambda x: len(x) > 1, q_segs))
+        # q_segs = [i for i in q_segs if i not in keyword_segs]
+        # print("/".join(q_segs))
+        flag = 0
+        for j in q_segs:
+            if j in keyword_segs:
+                flag = 1
+                break
+        if flag == 1:
+            kic += 1
+            ans[k][1] = ','.join(keyword_segs)
+            ans_filtered.append(v)
+        if kic == k_num:break
 
 df = pd.DataFrame(ans_filtered)
 df.to_csv('ans\\Qrank_家电问诊q2a.csv',
