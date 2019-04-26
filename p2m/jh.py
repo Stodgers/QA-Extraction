@@ -15,22 +15,29 @@ path2=os.path.abspath('../API/SentenceSimilarity-master')
 
 #print(path2)
 sys.path.append(path2)
-from sim_cilin import *
-from sim_hownet import *
-from sim_simhash import *
-from sim_tokenvector import *
-from sim_vsm import *
+# from sim_cilin import *
+# from sim_hownet import *
+# from sim_simhash import *
+# from sim_tokenvector import *
+# from sim_vsm import *
 
-cilin = SimCilin()
-hownet = SimHownet()
-simhash = SimHaming()
-simtoken = SimTokenVec()
-simvsm = SimVsm()
+# cilin = SimCilin()
+# hownet = SimHownet()
+# simhash = SimHaming()
+# simtoken = SimTokenVec()
+# simvsm = SimVsm()
+#
+# text1 = '我想喝可乐'
+# text2 = '有没有可口可乐'
+# print('cilin', cilin.distance(text1, text2))
+# print('hownet', hownet.distance(text1, text2))
+# print('simhash', simhash.distance(text1, text2))
+# print('simtoken', simtoken.distance(text1, text2))
+# print('simvsm', simvsm.distance(text1, text2))
 
-text1 = '我想喝可乐'
-text2 = '有没有可口可乐'
-print('cilin', cilin.distance(text1, text2))
-print('hownet', hownet.distance(text1, text2))
-print('simhash', simhash.distance(text1, text2))
-print('simtoken', simtoken.distance(text1, text2))
-print('simvsm', simvsm.distance(text1, text2))
+
+import jieba.posseg as pseg
+
+ttts = '我就觉得很酷炫，服不服？'
+ans = ' '.join(['/'.join((word.word,word.flag[0])) for word in pseg.lcut(ttts)])
+print(ans)

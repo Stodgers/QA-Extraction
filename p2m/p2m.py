@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2019/3/25 10:06
 # @Author  : Stodgers
-# @Site    :
+# @Site    : 
 # @File    : p2m.py
 # @Software: PyCharm
 
@@ -33,7 +33,7 @@ from cluster import *
 ################################################
 ################################################
 '''数据路径'''
-csv_path = 'data\\'+'家电问诊q2a.csv'
+csv_path = 'data\\'+'chatlog_QA.csv'
 
 '''全过滤词词典'''
 dic_word_path = 'dic\\'+'all_filter.txt'
