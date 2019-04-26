@@ -16,6 +16,7 @@ class SimVsm:
         words2 = [word.word for word in pesg.cut(text2) if word.flag[0] not in ['u', 'x', 'w']]
         tfidf_reps = self.tfidf_rep([words1, words2])
         return self.cosine_sim(np.array(tfidf_reps[0]), np.array(tfidf_reps[1]))
+
     '''对句子进行tfidf向量表示'''
     def tfidf_rep(self, sents):
         sent_list = []
@@ -55,7 +56,7 @@ def test():
     text1 = '南昌是江西的省会'
     text2 = '北京乃中国之首都'
 
-    text1 = '周杰伦是一个歌手'
+    text1 = '你是不是有点问题'
     text2 = '刘若英是个演员'
 
     simer = SimVsm()

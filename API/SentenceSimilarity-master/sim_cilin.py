@@ -60,8 +60,8 @@ class SimCilin:
 
     '''基于词相似度计算句子相似度'''
     def distance(self, text1, text2):
-        words1 = [word.word for word in pseg.cut(text1) if word.flag[0] not in ['u', 'x', 'w']]
-        words2 = [word.word for word in pseg.cut(text2) if word.flag[0] not in ['u', 'x', 'w']]
+        words1 = [word.word for word in pseg.cut(text1) if word.flag[0] not in ['e','y','o','u', 'x', 'w']]
+        words2 = [word.word for word in pseg.cut(text2) if word.flag[0] not in ['e','y','o','u', 'x', 'w']]
         score_words1 = []
         score_words2 = []
         for word1 in words1:
