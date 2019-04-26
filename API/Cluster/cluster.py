@@ -28,8 +28,7 @@ class cluster:
         self.Q_list,self.tt = self.data_load()
         self.tfidf_matrix = self.tf_idf()
         self.result = self.Kmeans()
-
-    '''数据加载,后缀容错'''
+    #global data
     def data_load(self):
         if type(self.data) == list:
             pass
@@ -50,8 +49,8 @@ class cluster:
         Q_list = [i[0] for i in self.data]
         return Q_list,self.data
 
-    '''TF-IDF Matrix'''
     def tf_idf(self):
+        #analyse.set_stop_words('all_filter.txt')
         def jieba_tockenize(text):
             return jieba.lcut(text)
         tfidf_vectorizer = TfidfVectorizer(tokenizer=jieba_tockenize,
@@ -61,7 +60,6 @@ class cluster:
         tfidf_matrix = tfidf_vectorizer.transform(self.Q_list)
         return tfidf_matrix
 
-    '''聚类,包含关键词'''
     def Kmeans(self):
         km_cluster = KMeans(n_clusters=self.num_clusters,max_iter=200,
                             n_init=40,tol=1e-6,init='random',n_jobs=-1
@@ -69,7 +67,6 @@ class cluster:
         result = km_cluster.fit_predict(self.tfidf_matrix)
         return result
 
-    '''数据拼装,重组'''
     def disp(self):
         key_temp = []
         keyword_list = []
@@ -86,6 +83,7 @@ class cluster:
                 key_temp.append(i)
             key_temp = list(set(key_temp))
             keyword_list.append(",".join(keywords))
+            #keyword_list.append(key_temp[:3])
         #tt[i][0],tt[i][1],tt[i][2],tt[i][3]
         ans = [[res[i],keyword_list[res[i]],tt[i][0],tt[i][1],tt[i][2],tt[i][3],tt[i][4]] for i in range(len(res))]
         ans = sorted(ans,key=lambda x:x[0])
