@@ -16,6 +16,8 @@ import pandas as pd
 import re
 import sys
 import os
+import math
+import codecs
 path1=os.path.abspath('.')
 path2=os.path.abspath('../API/SentenceSimilarity-master')
 path3=os.path.abspath('../API/Cluster')
@@ -46,24 +48,9 @@ sim_seed = 0.45
 
 
 def data_loader(csv_path):
-    with open(csv_path, errors='ignore') as ts:
-        let = ts.read(10)
-        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
-        if tt != 0:
-            ts = open(csv_path, errors='ignore')
-            df_list = pd.read_csv(ts).values.tolist()
-    with open(csv_path, errors='ignore',encoding='utf-8') as ts:
-        let = ts.read(10)
-        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
-        if tt != 0:
-            ts = open(csv_path, errors='ignore',encoding='utf-8')
-            df_list = pd.read_csv(ts).values.tolist()
-    with open(csv_path, errors='ignore',encoding='utf-8-sig') as ts:
-        let = ts.read(10)
-        tt = len(''.join(re.findall(r'[\u4e00-\u9fa5]', let)))
-        if tt != 0:
-            ts = open(csv_path, errors='ignore',encoding='utf-8-sig')
-            df_list = pd.read_csv(ts).values.tolist()
+    with codecs.open(csv_path, errors='ignore') as ts:
+        df_list = pd.read_csv(ts).values.tolist()
+
 
     np_df_len = len(df_list)
     flag = 0
@@ -128,9 +115,6 @@ def dic_add(dic_word_path):
         filter_word.append(t)
         jieba.add_word(t)
 dic_add(dic_word_path)
-
-temp_data_loader = data_loader(csv_path)
-print("temp_data_loader: ",len(temp_data_loader))
 
 def text_filter(temp):
     tec = []
@@ -243,11 +227,12 @@ def word_process_sim(temp,temp_calc):
 Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("Qrank",len(Qrank), '\n')
 
-
-ts_num = len(Qrank)/30
-cluster_num = int((ts_num+cluster_num)/2)
+flat_num = len(Qrank)/10
+p_a = math.sqrt((cluster_num+1)/flat_num)
+cluster_num = int(p_a*flat_num)
 cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
+print('Clustered!')
 
 rank_temp = []
 cu_temp = []
@@ -281,22 +266,30 @@ def ans_dic_add(dic_word_path):
 ans_dic_add('dic\\ans_filter.txt')
 
 ans_filtered = []
-for k,v in enumerate(ans):
-    keyword_segs = ans[k][1].split(',')
+for i in rank_temp:
+    kic = 0
+    ans = i[0]
+    keyword_segs = ans[0][1].split(',')
     keyword_segs = list(filter(lambda x: x.strip(), keyword_segs))
     keyword_segs = list(filter(lambda x: len(x) > 1, keyword_segs))
-    keyword_segs = [i for i in keyword_segs if i not in ans_filter_word]
-    q_segs = jieba.lcut(ans[k][2])
-    q_segs = list(filter(lambda x: x.strip(),q_segs))
-    q_segs = list(filter(lambda x: len(x) > 1,q_segs))
-    flag = 0
-    for j in q_segs:
-        if j in keyword_segs:
-            flag = 1
-            break
-    if flag == 1:
-        ans[k][1] = ','.join(keyword_segs)
-        ans_filtered.append(v)
+    keyword_segs = [j for j in keyword_segs if j not in ans_filter_word]
+    for k,v in enumerate(ans):
+
+        q_segs = jieba.lcut(ans[k][2])
+        q_segs = list(filter(lambda x: x.strip(), q_segs))
+        q_segs = list(filter(lambda x: len(x) > 1, q_segs))
+        # q_segs = [i for i in q_segs if i not in keyword_segs]
+        # print("/".join(q_segs))
+        flag = 0
+        for j in q_segs:
+            if j in keyword_segs:
+                flag = 1
+                break
+        if flag == 1:
+            kic += 1
+            ans[k][1] = ','.join(keyword_segs)
+            ans_filtered.append(v)
+        if kic == k_num:break
 
 df = pd.DataFrame(ans_filtered)
 df.to_csv('ans\\Qrank_all_filter.csv',
