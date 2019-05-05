@@ -43,16 +43,34 @@ cluster_num = 20
 
 '''相似问合并参数,0.9*0.9=0.81'''
 sim_seed = 0.45
+
+'''每个簇保留问题数'''
+k_num = 10
 ################################################
 ################################################
 
 
+'''把全过滤词假如分词词典，匹配过滤'''
+filter_word = []
+def dic_add(dic_word_path):
+    filter_word_t = open(dic_word_path, encoding='utf8')
+    for i in filter_word_t.readlines():
+        t = i.strip('\n')
+        # print(t)
+        filter_word.append(t)
+        jieba.add_word(t)
+dic_add(dic_word_path)
+
+
+'''栈的思想，暴力合并'''
 def data_loader(csv_path):
+
     with codecs.open(csv_path, errors='ignore') as ts:
         df_list = pd.read_csv(ts).values.tolist()
 
-
     np_df_len = len(df_list)
+    print('len',np_df_len)
+    print(df_list[0])
     flag = 0
     rw_ans = []
     for i in range(np_df_len):
@@ -64,7 +82,7 @@ def data_loader(csv_path):
         segs = df_list[i][2]
         ask = []
         ans = []
-        if flag == 0 and tag == '客户':
+        if flag == 0 and tag == '顾客':
             ask.append(segs)
             ask1 = 1
             flag = 1
@@ -105,17 +123,9 @@ def data_loader(csv_path):
 
 temp_data_loader = data_loader(csv_path)
 print("temp_data_loader: ",len(temp_data_loader))
-
-filter_word = []
-def dic_add(dic_word_path):
-    filter_word_t = open(dic_word_path, encoding='utf8')
-    for i in filter_word_t.readlines():
-        t = i.strip('\n')
-        # print(t)
-        filter_word.append(t)
-        jieba.add_word(t)
-dic_add(dic_word_path)
-
+if len(temp_data_loader) == 0:
+    print('修改角色标记')
+'''数据过滤'''
 def text_filter(temp):
     tec = []
     k = 0
@@ -125,10 +135,6 @@ def text_filter(temp):
         text_i = text_i.replace('　', '')
         ticc = text_i
         if len(text_i) <= 2 or len(text_i) >= 50: continue
-        #         segs = jieba.cut(text_i)
-        #         segs = list(filter(lambda x:not x.isalpha(),segs))
-        #         segs = list(filter(lambda x:not x.isdigit(),segs))
-        #         segs = list(filter(lambda x:x not in bd,segs))
         tt = ''.join(re.findall(r'[\u4e00-\u9fa5]', str(i[0])))
         if len(tt) < 3: continue
         segs = jieba.cut(tt)
