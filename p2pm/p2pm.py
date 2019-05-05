@@ -152,8 +152,9 @@ def text_filter(temp):
 text_filter_temp = text_filter(temp_data_loader)  # 86223 len(temp)
 print("text_filter_temp",len(text_filter_temp))
 
+
+'''数据统计（频次），结构拼装'''
 def text_calc_merge(temp):
-    tec = []
     dic_index = {}
     dic = {}
     dic_calc = {}
@@ -177,6 +178,7 @@ def text_calc_merge(temp):
     for i,v in enumerate(tec):
         tec_calc[i].append(tec[i][1])
         tec_calc[i].append(dic_index[i])
+    '''拼接后tec_calc每行结构->(Q,Num,A,index)'''
     tec = sorted(tec, key=lambda x: x[0], reverse=True)
     tec_calc = sorted(tec_calc, key=lambda x: x[1],reverse=True)
     return tec, tec_calc
@@ -185,6 +187,7 @@ text_calc_merge_temp, temp_calc = text_calc_merge(text_filter_temp)
 print("text_calc_merge_temp",len(text_calc_merge_temp))
 print(temp_calc[:2])
 
+'''相似度计算合并相似问'''
 def word_process_sim(temp,temp_calc):
     cilin = SimCilin()
     hownet = SimHownet()
@@ -194,6 +197,8 @@ def word_process_sim(temp,temp_calc):
     len_temp = len(temp)
     ans_temp = []
     k = 0
+
+    '''为Q_List添加一个空存储位置，放置在每行最后一个位置'''
     for i,v in enumerate(temp_calc):
         temp_calc[i].append([])
 
@@ -215,7 +220,6 @@ def word_process_sim(temp,temp_calc):
                     temp_q_list.append(tex)
                     temp_calc[j][4]+=temp_q_list
                     break
-
             except Exception:
                 pass
 
@@ -226,13 +230,16 @@ def word_process_sim(temp,temp_calc):
                 print("{:.2f}%".format(t_jd) + " " + str(k) + " " + str(i))
                 #print("{:.2f}%".format(100 * i / (len_temp - 1)) + " " + str(k) + " " + str(i), end='\r')
             k += 1
-    temp_calc = sorted(temp_calc,key=lambda x:x[0],reverse=True)
+    temp_calc = sorted(temp_calc,key=lambda x:x[1],reverse=True)
+    '''结构重新组装'''
     temp_calc = [[i[0],i[2],i[1],i[3],i[4][::-1]] for i in temp_calc if i[1]!=0]
     return temp_calc
+
 
 Qrank= word_process_sim(text_calc_merge_temp,temp_calc)
 print("Qrank",len(Qrank), '\n')
 
+'''Q聚类'''
 flat_num = len(Qrank)/10
 p_a = math.sqrt((cluster_num+1)/flat_num)
 cluster_num = int(p_a*flat_num)
@@ -240,6 +247,7 @@ cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
 print('Clustered!')
 
+'''簇内排序和簇间排序'''
 rank_temp = []
 cu_temp = []
 sum = 0
