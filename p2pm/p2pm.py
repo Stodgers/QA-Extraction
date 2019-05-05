@@ -263,12 +263,9 @@ for i,v in enumerate(rank_ans):
         sum += rank_ans[i][4]
 
 rank_temp = sorted(rank_temp,key=lambda x:x[1],reverse=True)
-ans = []
-for i in rank_temp:
-    for j in i[0]:
-        ans.append(j)
-        #print(j)
-'''关键词过滤'''
+
+
+'''添加关键词过滤词典'''
 ans_filter_word = []
 def ans_dic_add(dic_word_path):
     filter_word_t = open(dic_word_path, encoding='utf8')
@@ -279,6 +276,7 @@ def ans_dic_add(dic_word_path):
         jieba.add_word(t)
 ans_dic_add('dic\\ans_filter.txt')
 
+'''关键词过滤,汇总结果'''
 ans_filtered = []
 for i in rank_temp:
     kic = 0
