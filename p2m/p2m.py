@@ -203,7 +203,7 @@ p_a = math.sqrt((cluster_num+1)/flat_num)
 cluster_num = int(p_a*flat_num)
 cl = cluster(cluster_num, Qrank)
 keyword, rank_ans= cl.disp()
-
+print('Clustered!')
 rank_temp = []
 cu_temp = []
 sum = 0
