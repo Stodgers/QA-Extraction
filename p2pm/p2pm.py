@@ -19,11 +19,12 @@ import os
 import math
 import codecs
 path1=os.path.abspath('.')
-path2=os.path.abspath('../API/SentenceSimilarity-master')
-path3=os.path.abspath('../API/Cluster')
+path2=os.path.abspath('../API/SentenceSimilarity-master/')
+path3=os.path.abspath('../API/Cluster/')
 #print(path2)
 sys.path.append(path2)
 sys.path.append(path3)
+print(path2)
 from sim_cilin import *
 from sim_hownet import *
 from sim_simhash import *
@@ -73,7 +74,9 @@ def data_loader(csv_path):
     print(df_list[0])
     flag = 0
     rw_ans = []
-    for i in range(np_df_len):
+    i = 0
+    while(i<np_df_len):
+    #for i in range(np_df_len):
         esy = 0
         ans1 = 0
         ask1 = 0
@@ -82,7 +85,9 @@ def data_loader(csv_path):
         segs = df_list[i][2]
         ask = []
         ans = []
-        if flag == 0 and tag == '顾客':
+        if flag == 0 and tag == '客服':
+            i += 1
+        if flag == 0 and tag == '客户':
             ask.append(segs)
             ask1 = 1
             flag = 1
@@ -91,7 +96,7 @@ def data_loader(csv_path):
                 if i>=np_df_len:break
                 sess = df_list[i][0]
                 if sess != df_list[i-1][0]:
-                    i-=1
+                    flag=0
                     break
                 tag = df_list[i][1]
                 segs = df_list[i][2]
@@ -119,6 +124,7 @@ def data_loader(csv_path):
             askstr = ','.join(str(s) for s in ask)
             anstr = ','.join(str(s) for s in ans)
             rw_ans.append((askstr,anstr))
+        print(i)
     return rw_ans
 
 temp_data_loader = data_loader(csv_path)
