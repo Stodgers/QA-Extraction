@@ -61,7 +61,7 @@ class cluster:
         return tfidf_matrix
 
     def Kmeans(self):
-        km_cluster = KMeans(n_clusters=self.num_clusters,max_iter=200,
+        km_cluster = KMeans(n_clusters=self.num_clusters,max_iter=50,
                             n_init=40,tol=1e-6,init='random',n_jobs=-1
                             )
         result = km_cluster.fit_predict(self.tfidf_matrix)
