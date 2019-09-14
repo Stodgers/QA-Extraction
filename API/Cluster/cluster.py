@@ -90,7 +90,6 @@ class cluster:
         dff = pd.DataFrame(ans)
         dff.to_csv('ans\\cluster_ans.csv',index=False,header=False,encoding='utf-8-sig')
         return key_temp,ans
-
 '''
 csv_path = 'C:\\Users\\Ma\\Desktop\\QA.csv'
 cl = cluster(10, csv_path)
